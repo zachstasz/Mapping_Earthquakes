@@ -2,7 +2,7 @@
 console.log("working");
 
 // Create the map object with center at the San Francisco airport.
-let map = L.map('mapid').setView([37.5, -122.5], 10);
+let map = L.map('map').setView([37.5, -122.5], 10);
 
 // Add GeoJSON data.
 let sanFranAirport =
@@ -25,11 +25,27 @@ let sanFranAirport =
 ]};
 
 // Grabbing our GeoJSON data.
-L.geoJSON(sanFranAirport).addTo(map);
+L.geoJSON(sanFranAirport, {
+
+    // We turn each feature into a marker on the map
+    pointToLayer: function(feature, latlng) {
+        console.log(feature);
+        return L.marker(latlng)
+        .bindPopup("<h2>" + feature.properties.city + "</h2>");
+    }
+}).addTo(map);
+
+// // Using the onEachFeature function instead of pointToLayer
+// L.geoJSON(sanFranAirport, {
+//   onEachFeature: function(feature, layer) {
+//     console.log(layer);
+//     layer.bindPopup();
+//   }
+// }).addTo(map);
 
 // We create the tile layer that will be the background of our map.
 // We create the tile layer that will be the background of our map.
-let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     maxZoom: 18,
     id: 'mapbox/streets-v11',
